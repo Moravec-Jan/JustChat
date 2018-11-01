@@ -1,0 +1,58 @@
+FORMAT: 1A
+HOST: http://justchat.net/
+
+# JustChat
+
+Simple chat implementation.
+
+# Group Chat
+
+## Index [/]
+### Index page [POST]
++ Response 200 (text/html)
+
+        <html>
+        Welcome stranger
+        </html>
+
+## Private chat request [/pm/request]
+User wants to chat with other user in private chat. Requested user should be notified via websocket.
+### Request [POST]
++ Request (application/json)
+
+        {
+            "user": "JohnDoe"
+        }
+        
++ Response 204 (appliaction/json)  
+
+## Private chat accept [/pm/accept]
+User accepts private chat with other user. User who requested chat should be notified via websocket.
+### Accept [POST]
++ Request (application/json)
+
+        {
+            "user": "JohnDoe"
+        }
+        
++ Response 204 (appliaction/json)  
+
+# Group Messages
+
+## Message [/message]
+### Adding message [POST]
+User adds new message.
++ Request (application/json)
+
+        {
+            "message": "Hello friends."
+        }
+        
++ Response 204 (appliaction/json)     
+
+## User Logout [/logout]
+### Logout [POST]
+            
++ Request (application/json)
+        
++ Response 204 (appliaction/json)
