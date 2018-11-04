@@ -4,5 +4,4 @@ import {Message} from "./message";
 export interface Conversation {
   user: User;
   messages: Message[];
-  active: boolean;
 }
