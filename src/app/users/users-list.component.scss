@@ -1,0 +1,26 @@
+@import '../../styles.scss';
+
+#users {
+  width: 200px;
+  background: $light-gray;
+  height: 100%;
+}
+
+.mat-list .mat-list-item {
+  height: 30px;
+}
+
+.user-button {
+  display: flex;
+  flex-wrap: wrap;
+  height: 30px;
+  padding: 4px;
+  background: $light-gray;
+  min-width: auto;
+}
+
+.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+}

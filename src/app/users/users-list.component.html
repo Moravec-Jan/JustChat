@@ -1,0 +1,9 @@
+<div id="users" class="scrollable">
+  <mat-list>
+    <h3 mat-subheader>Users</h3>
+    <mat-list-item *ngFor="let user of users" (click)="onUserClick(user)">
+      <button disableRipple mat-flat-button class="user-button"> {{user.name}}</button>
+    </mat-list-item>
+  </mat-list>
+</div>
+

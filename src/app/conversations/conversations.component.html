@@ -1,0 +1,24 @@
+<div id=message-box>
+  <mat-tab-group [selectedIndex]="selection">
+    <mat-tab *ngFor="let conversation of conversations.getValue(); let conversationIndex = index" [id]="conversation.user.id">
+      <ng-template mat-tab-label>
+        {{conversation.user.name}} &nbsp; &nbsp; &nbsp; <!-- did not found easy way to align close button to right-->
+        <mat-icon (click)="closeConversation(conversationIndex)">close</mat-icon>
+      </ng-template>
+      <div class="chat-container">
+        <p class="message" *ngFor="let message of conversation.messages"><b>{{message.author + ':'}}</b> {{message.body}}</p>
+      </div>
+
+    </mat-tab>
+  </mat-tab-group>
+  <form class="message-form full-width">
+    <mat-form-field id="message-input">
+      <input matInput [(ngModel)]="messageInput" placeholder="Your message" name="message">
+    </mat-form-field>
+    <button [disabled]="!canSend" mat-raised-button color="primary" id="send-button" (click)="onSubmit()" >
+      Send
+    </button>
+  </form>
+
+
+</div>

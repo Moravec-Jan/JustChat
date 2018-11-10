@@ -1,0 +1,38 @@
+@import '../../styles.scss';
+
+#message-box {
+  background: $light-gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  float: right;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#send-button {
+  margin-left: 10px;
+  height: 30px;
+}
+
+#message-input {
+  width: calc(100% - 120px);
+  padding: 0 12px;
+}
+
+:host /deep/ .mat-tab-body-wrapper {
+  height: 100%;
+  padding: 0 12px;
+  overflow-x: hidden;
+}
+
+:host /deep/ .mat-tab-group {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto
+}
+
+.message {
+  word-break: break-all
+}
