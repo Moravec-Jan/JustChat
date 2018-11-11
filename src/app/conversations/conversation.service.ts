@@ -1,21 +1,19 @@
-import {Conversation} from "./conversation";
-import {User} from "../users/user";
-import {Bot} from "../bot/Bot";
+import {ConversationModel} from "./conversation.model";
+import {UserModel} from "../users/user.model";
+import {BotModel} from "../bot/bot.model";
 import {EventEmitter, Injectable} from "@angular/core";
 import {BehaviorSubject} from "rxjs";
-import {HodorBot} from "../bot/Hodor";
-import * as socketIO from 'socket.io-client';
-import {Message} from "./message";
+import {HodorBot} from "../bot/hodor.model";
 import {RemoteMessage} from "./remote-message";
-import {AppConfig} from "../app.config";
 import {SocketService} from "../socket/socket.service";
 
 @Injectable()
 export class ConversationService {
 
-  public bots: Bot[] = [];
-  public onUserClickEmitter: EventEmitter<User> = new EventEmitter<User>();
-  private _conversations: Conversation[] = [
+  public bots: BotModel[] = [];
+  public onUserClickEmitter: EventEmitter<UserModel> = new EventEmitter();
+  public onMessageReceiveEmitter: EventEmitter<ConversationModel> = new EventEmitter();
+  private _conversations: ConversationModel[] = [
     {
       user: {
         id: "0",
@@ -26,7 +24,8 @@ export class ConversationService {
           author: "Hodor",
           body: "Hodor"
         }
-      ]
+      ],
+      notifications: 0
     }
   ];
 
@@ -36,31 +35,32 @@ export class ConversationService {
   }
 
   private onReceiveMessage(data: RemoteMessage) {
-    const target: Conversation = this._conversations.find((conversation: Conversation) => conversation.user.id === data.author.id)
-    if (!target) {
-      this.addConversation({ // if conversation doesnt exist, create it
-        messages: [{
-          author: data.author.name,
-          body: data.body
-        }],
-        user: data.author
-      })
+    let target: ConversationModel = this._conversations.find((conversation: ConversationModel) => conversation.user.id === data.author.id)
+    if (!target) {  // if conversation doesnt exist, create it
+      target = {
+        messages: [],
+        user: data.author,
+        notifications: 0
+      };
+      this.addConversation(target)
     }
     target.messages.push({author: data.author.name, body: data.body}); // add message
+    this.onMessageReceiveEmitter.emit(target);
+    console.log(target.notifications);
   }
 
-  public get conversations(): BehaviorSubject<Conversation[]> { // return conversations as Observable
+  public get conversations(): BehaviorSubject<ConversationModel[]> { // return conversations as Observable
     return new BehaviorSubject(this._conversations);
   }
 
-  public addConversation(item: Conversation) {
+  public addConversation(item: ConversationModel) {
     this._conversations.push(item);
   }
 
-  public addMessage(user: User, conversation: Conversation, text: string) {
+  public addMessage(user: UserModel, conversation: ConversationModel, text: string) {
     conversation.messages.push({author: user.name, body: text});
 
-    const result: Bot = this.bots.find((bot) => bot.id === conversation.user.id); //find out if target is bot
+    const result: BotModel = this.bots.find((bot) => bot.id === conversation.user.id); //find out if target is bot
     if (result) {
       result.onMessageAdd(this, user, conversation); //send message to bot
     } else {
@@ -70,7 +70,7 @@ export class ConversationService {
 
   }
 
-  public show(user: User) {
+  public show(user: UserModel) {
     this.onUserClickEmitter.emit(user);
   }
 }

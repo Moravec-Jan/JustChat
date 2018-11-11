@@ -1,7 +1,7 @@
-import {User} from "../users/user";
+import {UserModel} from "../users/user.model";
 
 export interface RemoteMessage {
-  author: User;
-  target: User;
+  author: UserModel;
+  target: UserModel;
   body: string;
 }

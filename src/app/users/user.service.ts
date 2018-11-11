@@ -1,26 +1,30 @@
-import {User} from "./user";
-import {AuthenticatorService} from "../autheticator/AuthenticatorService";
+import {UserModel} from "./user.model";
+import {AuthenticatorService} from "../autheticator/authenticator.service";
 import {Injectable} from "@angular/core";
 import {SocketService} from "../socket/socket.service";
 
 @Injectable()
 export class UserService {
+  private _users: UserModel[] = [{id: "0", name: "Hodor"}];
 
-
-  public constructor(private authenticatorService: AuthenticatorService, private socketservice: SocketService) {
-    socketservice.socket.on(SocketService.USER_LOGGED_IN_ID, (user: User) => this.add(user));
-    socketservice.socket.on(SocketService.USER_LOGGED_OUT_ID, (user: id) => this.removeById(user.id));
+  public constructor(private socketService: SocketService) {
+    socketService.socket.on(SocketService.USER_LOGGED_IN_ID, (user: UserModel) => this.add(user));
+    socketService.socket.on(SocketService.USER_LOGGED_OUT_ID, (user: id) => this.removeById(user.id));
   }
 
-  public get users(): User[] {
-    return this.authenticatorService.users;
+  public get users(): UserModel[] {
+    return this._users;
   }
 
-  public add(item: User) {
+  public add(item: UserModel) {
     this.users.push(item);
   }
 
-  public remove(item: User) {
+  public addRange(users: UserModel[]) {
+    this.users.concat(users);
+  }
+
+  public remove(item: UserModel) {
     const index = this.users.indexOf(item);
     if (index > -1) {
       this.users.splice(index, 1);
@@ -28,7 +32,7 @@ export class UserService {
   }
 
   public removeById(id: string) {
-    const item: User = this.users.find((user) => user.id === id);
+    const item: UserModel = this.users.find((user) => user.id === id);
     if (!item) {
       return;
     }

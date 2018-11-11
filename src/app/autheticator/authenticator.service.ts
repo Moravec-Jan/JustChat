@@ -1,14 +1,16 @@
 import {Injectable} from "@angular/core";
-import {User} from "../users/user";
+import {UserModel} from "../users/user.model";
 import {AppConfig} from "../app.config";
 import {SocketService} from "../socket/socket.service";
+import {UserService} from "../users/user.service";
 
 @Injectable()
 export class AuthenticatorService {
   private _username: string;
-  private _users: User[] = [{id: "0", name: "Hodor"}];
+  private _logged: boolean = false;
+  private _host: boolean = true; // logged as host
 
-  constructor(private socketService: SocketService) {
+  constructor(private socketService: SocketService, private userService: UserService) {
   }
 
   public get username(): string {
@@ -20,10 +22,6 @@ export class AuthenticatorService {
     return this.socketService.socket.id;
   }
 
-  public get users(): User[] {
-    return this._users;
-  }
-
   public login() {
     this.socketService.socket.emit(SocketService.LOGIN_REQUEST_ID);
     this.socketService.socket.on(SocketService.LOGIN_REQUEST_ID, (value) => {
@@ -32,13 +30,19 @@ export class AuthenticatorService {
   }
 
   public onLogin(value: LoggedInfo) {
+    this._logged = true;
     this._username = value.name;
-    this._users = this._users.concat(value.users);
+    this.userService.addRange(value.users);
+  }
+
+
+  get logged(): boolean {
+    return this._logged;
   }
 }
 
 export interface LoggedInfo {
   name: string,
-  users: User[]
+  users: UserModel[]
 }
 

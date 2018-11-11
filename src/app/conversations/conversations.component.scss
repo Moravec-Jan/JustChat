@@ -1,4 +1,4 @@
-@import '../../styles.scss';
+@import '../colors';
 
 #message-box {
   background: $light-gray;
@@ -35,4 +35,27 @@
 
 .message {
   word-break: break-all
+}
+
+:host /deep/ .mat-tab-label {
+  padding: 2px 0 0 8px;
+  min-width: 100px;
+}
+
+:host /deep/ .mat-tab-label-content mat-icon {
+  margin-left: 12px;
+}
+
+
+.notification-icon {
+  color: rgba(149, 0, 18, 256);
+  $size: 16px;
+  font-size: $size;
+  height: $size;
+  width: $size;
+  margin-right: 4px;
+}
+
+.message-textarea {
+  resize: none;
 }

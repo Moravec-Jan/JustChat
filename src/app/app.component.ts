@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AuthenticatorService} from "./autheticator/AuthenticatorService";
+import {AuthenticatorService} from "./autheticator/authenticator.service";
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,10 @@ import {AuthenticatorService} from "./autheticator/AuthenticatorService";
 export class AppComponent {
 
   public constructor(private authenticatorService: AuthenticatorService) {
+  }
+
+  public get logged() {
+    return this.authenticatorService.logged;
   }
 
   public get username(): string {

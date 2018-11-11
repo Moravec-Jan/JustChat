@@ -15,18 +15,20 @@ import {UsersListComponent} from './users/users-list.component';
 import {ConversationsComponent} from './conversations/conversations.component';
 import {ConversationService} from "./conversations/conversation.service";
 import {UserService} from "./users/user.service";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
-import {AuthenticatorService} from "./autheticator/AuthenticatorService";
-import {AuthenticatorFactory} from "./autheticator/AuthenticatorFactory";
+import {AuthenticatorService} from "./autheticator/authenticator.service";
+import {AuthenticatorFactory} from "./autheticator/authenticator.factory";
 import {CommonModule} from "@angular/common";
 import {SocketService} from "./socket/socket.service";
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UsersListComponent,
     ConversationsComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,14 +44,15 @@ import {SocketService} from "./socket/socket.service";
     MatDividerModule,
     FormsModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   providers: [
     AuthenticatorService,
     {
       provide: APP_INITIALIZER,
       useFactory: AuthenticatorFactory,
-      deps: [AuthenticatorService, SocketService],
+      deps: [AuthenticatorService, SocketService,UserService],
       multi: true
     },
     ConversationService,

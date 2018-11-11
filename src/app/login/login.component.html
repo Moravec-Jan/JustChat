@@ -1,0 +1,36 @@
+<div id="loginSection">
+  <mat-tab-group [(selectedIndex)]="selection">
+    <mat-tab label="Login">
+      <form>
+        <h3 class="label">Login to JustChat</h3>
+        <mat-form-field>
+          <input [(ngModel)]="loginEmailInput" name="loginEmailInput" type="email" class="emailInput" matInput placeholder="Email" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input [(ngModel)]="loginPasswordInput" name="loginPasswordInput" type="password" class="passwordInput" matInput placeholder="Password" required>
+        </mat-form-field>
+        <button (click)="login()" class="submitButton" mat-raised-button color="accent">Login</button>
+      </form>
+    </mat-tab>
+
+    <mat-tab label="Register">
+      <form>
+        <h3 class="label">Create new account</h3>
+        <mat-form-field>
+          <input [(ngModel)]="registerNameInput" name="registerNameInput" type="text" class="nameInput" matInput placeholder="Nickname" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input [(ngModel)]="registerEmailInput" name="registerEmailInput" type="email" class="emailInput" matInput placeholder="Email" required>
+        </mat-form-field>
+        <mat-form-field>
+
+          <input [(ngModel)]="registerPasswordInput" name="registerPasswordInput" type="password" class="passwordInput" matInput placeholder="Password"
+                 required>
+        </mat-form-field>
+        <button  (clik)="register()" class="submitButton" mat-raised-button color="accent">Register</button>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+
+
+</div>

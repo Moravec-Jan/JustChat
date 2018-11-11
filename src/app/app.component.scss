@@ -11,6 +11,9 @@ app-conversations {
   flex: 1;
 }
 
+app-login{
+  width: 100%;
+}
 
 mat-toolbar {
   justify-content: space-between;
@@ -30,3 +33,4 @@ mat-toolbar {
 body, html {
   overflow-x: hidden;
 }
+

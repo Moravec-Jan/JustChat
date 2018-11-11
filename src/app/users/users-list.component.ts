@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "./user.service";
 import {ConversationService} from "../conversations/conversation.service";
-import {User} from "./user";
-import {Conversation} from "../conversations/conversation";
+import {UserModel} from "./user.model";
+import {ConversationModel} from "../conversations/conversation.model";
 
 @Component({
   selector: 'app-users-list',
@@ -18,7 +18,7 @@ export class UsersListComponent implements OnInit {
     this.conversationService = conversationService;
   }
 
-  get users(): User[] {
+  get users(): UserModel[] {
     return this.userService.users;
   }
 
@@ -26,7 +26,7 @@ export class UsersListComponent implements OnInit {
 
   }
 
-  public onUserClick(user: User) {
+  public onUserClick(user: UserModel) {
     this.conversationService.show(user)
   }
 }

@@ -1,19 +1,23 @@
 <div id=message-box>
   <mat-tab-group [(selectedIndex)]="selection">
-    <mat-tab *ngFor="let conversation of conversations.getValue(); let conversationIndex = index" [id]="conversation.user.id">
+    <mat-tab *ngFor="let conversation of conversations.getValue(); let conversationIndex = index"
+             [id]="conversation.user.id">
       <ng-template mat-tab-label>
-        {{conversation.user.name}} &nbsp; &nbsp; &nbsp; <!-- did not found easy way to align close button to right-->
+        <mat-icon class="notification-icon" *ngIf="conversation.notifications > 0">notifications</mat-icon>
+        {{conversation.user.name}}
         <mat-icon (click)="closeConversation(conversationIndex)">close</mat-icon>
       </ng-template>
       <div class="chat-container">
-        <p class="message" *ngFor="let message of conversation.messages"><b>{{message.author + ':'}}</b> {{message.body}}</p>
+        <p class="message" *ngFor="let message of conversation.messages">
+          <b>{{message.author + ':'}}</b> {{message.body}}</p>
       </div>
 
     </mat-tab>
   </mat-tab-group>
   <form class="message-form full-width">
     <mat-form-field id="message-input">
-      <input matInput [(ngModel)]="messageInput" placeholder="Your message" name="message">
+      <textarea class="message-textarea" autofocus rows="3" matInput [(ngModel)]="messageInput"
+                placeholder="Your message" name="message"></textarea>
     </mat-form-field>
     <button [disabled]="!canSend" mat-raised-button color="primary" id="send-button" (click)="onSubmit()" >
       Send

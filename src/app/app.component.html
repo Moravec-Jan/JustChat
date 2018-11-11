@@ -3,13 +3,19 @@
 
   <div class="user-profile">
     <b>{{username}}</b>
-    Logout
-
+    <span *ngIf="logged">Logout</span>
   </div>
 </mat-toolbar>
 
 <div class="main-content">
-  <app-users-list></app-users-list>
-  <span class="space"></span>
-  <app-conversations></app-conversations>
+  <div *ngIf="logged; else loginSection">
+    <app-users-list></app-users-list>
+    <span class="space"></span>
+    <app-conversations></app-conversations>
+  </div>
+
+  <ng-template #loginSection>
+    <app-login></app-login>
+  </ng-template>
+
 </div>
