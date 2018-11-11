@@ -7,7 +7,6 @@ import {ConversationService} from "./conversation.service";
 import {Conversation} from "./conversation";
 import {AuthenticatorService} from "../autheticator/AuthenticatorService";
 import {User} from "../users/user";
-import {selectValueAccessor} from "@angular/forms/src/directives/shared";
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -16,9 +15,8 @@ import {BehaviorSubject} from "rxjs";
   styleUrls: ['./conversations.component.scss']
 })
 export class ConversationsComponent implements OnInit {
-
   public messageInput: string;
-  private canSend: boolean = false;
+  private _canSend: boolean = false;
   public selection: number = 0;
   @ViewChild(MatTabGroup)
   public tabGroup: MatTabGroup; // bind tagGroup component to this variable
@@ -36,7 +34,7 @@ export class ConversationsComponent implements OnInit {
     });
 
     this.conversations.subscribe((value: Conversation[]) => {
-      this.canSend = value.length > 0;
+      this._canSend = value.length > 0;
     })
   }
 
@@ -53,7 +51,11 @@ export class ConversationsComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.canSend = this.conversations.getValue().length > 0;
+    this._canSend = this.conversations.getValue().length > 0;
+  }
+
+  get canSend(): boolean {
+    return this._canSend;
   }
 
   public getCurrentConversation(): Conversation {
@@ -74,7 +76,7 @@ export class ConversationsComponent implements OnInit {
     }
     const currentConversation = this.getCurrentConversation();
     if (currentConversation) {
-      this.conversationService.addMessage({id: "currentUser", name: this.authenticatorService.username}
+      this.conversationService.addMessage({id: this.authenticatorService.id, name: this.authenticatorService.username}
         , currentConversation, this.messageInput);
       this.messageInput = "";
     }

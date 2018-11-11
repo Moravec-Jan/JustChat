@@ -14,6 +14,9 @@
  * Learn more in https://angular.io/guide/browser-support
  */
 
+// https://github.com/socketio/socket.io-client/issues/1166
+(window as any).global = window;
+
 /***************************************************************************************************
  * BROWSER POLYFILLS
  */

@@ -8,7 +8,7 @@ import {Conversation} from "../conversations/conversation";
 export class HodorBot extends Bot {
   public user: User = {id: "0", name: "Hodor"};
 
-  public constructor(private conversationService: ConversationService) {
+  public constructor() {
     super();
   }
 
@@ -16,9 +16,9 @@ export class HodorBot extends Bot {
     return this.user.id;
   }
 
-  public onMessageAdd(fromUser: User, targetConversation: Conversation) {
+  public onMessageAdd(conversationService: ConversationService,fromUser: User, targetConversation: Conversation) {
     if (fromUser.id !== this.id) {
-      this.conversationService.addMessage(this.user, targetConversation, "Hodor");
+      conversationService.addMessage(this.user, targetConversation, "Hodor");
     }
   }
 

@@ -1,5 +1,5 @@
 <div id=message-box>
-  <mat-tab-group [selectedIndex]="selection">
+  <mat-tab-group [(selectedIndex)]="selection">
     <mat-tab *ngFor="let conversation of conversations.getValue(); let conversationIndex = index" [id]="conversation.user.id">
       <ng-template mat-tab-label>
         {{conversation.user.name}} &nbsp; &nbsp; &nbsp; <!-- did not found easy way to align close button to right-->

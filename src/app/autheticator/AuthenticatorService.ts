@@ -1,17 +1,23 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
 import {User} from "../users/user";
+import {AppConfig} from "../app.config";
+import {SocketService} from "../socket/socket.service";
 
 @Injectable()
 export class AuthenticatorService {
   private _username: string;
   private _users: User[] = [{id: "0", name: "Hodor"}];
 
-  constructor(private http: HttpClient) {
+  constructor(private socketService: SocketService) {
   }
 
   public get username(): string {
     return this._username;
+  }
+
+
+  get id(): string {
+    return this.socketService.socket.id;
   }
 
   public get users(): User[] {
@@ -19,8 +25,10 @@ export class AuthenticatorService {
   }
 
   public login() {
-    this.http.get("http://private-257ab-justchat.apiary-mock.com/login").subscribe(
-      value => this.onLogin(<LoggedInfo>value));
+    this.socketService.socket.emit(SocketService.LOGIN_REQUEST_ID);
+    this.socketService.socket.on(SocketService.LOGIN_REQUEST_ID, (value) => {
+      this.onLogin(value)
+    })
   }
 
   public onLogin(value: LoggedInfo) {

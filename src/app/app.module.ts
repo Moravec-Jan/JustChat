@@ -20,6 +20,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthenticatorService} from "./autheticator/AuthenticatorService";
 import {AuthenticatorFactory} from "./autheticator/AuthenticatorFactory";
 import {CommonModule} from "@angular/common";
+import {SocketService} from "./socket/socket.service";
 
 @NgModule({
   declarations: [
@@ -45,13 +46,17 @@ import {CommonModule} from "@angular/common";
   ],
   providers: [
     AuthenticatorService,
-    {provide: APP_INITIALIZER, useFactory: AuthenticatorFactory, deps: [AuthenticatorService], multi: true},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: AuthenticatorFactory,
+      deps: [AuthenticatorService, SocketService],
+      multi: true
+    },
     ConversationService,
-    UserService
+    UserService,
+    SocketService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-
-
 }
