@@ -18,7 +18,7 @@ export class HodorBot extends BotModel {
 
   public onMessageAdd(conversationService: ConversationService, fromUser: UserModel, targetConversation: ConversationModel) {
     if (fromUser.id !== this.id) {
-      conversationService.addMessage(this.user, targetConversation, "Hodor");
+      conversationService.sendMessage(this.user, targetConversation, "Hodor");
     }
   }
 

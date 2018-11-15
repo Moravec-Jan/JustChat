@@ -11,10 +11,6 @@ export class AppComponent {
   public constructor(private authenticatorService: AuthenticatorService) {
   }
 
-  public get logged() {
-    return this.authenticatorService.logged;
-  }
-
   public get username(): string {
     return this.authenticatorService.username;
   }

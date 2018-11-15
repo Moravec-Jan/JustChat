@@ -1,6 +1,6 @@
 <div id=message-box>
   <mat-tab-group [(selectedIndex)]="selection">
-    <mat-tab *ngFor="let conversation of conversations.getValue(); let conversationIndex = index"
+    <mat-tab *ngFor="let conversation of conversations; let conversationIndex = index"
              [id]="conversation.user.id">
       <ng-template mat-tab-label>
         <mat-icon class="notification-icon" *ngIf="conversation.notifications > 0">notifications</mat-icon>
@@ -8,18 +8,24 @@
         <mat-icon (click)="closeConversation(conversationIndex)">close</mat-icon>
       </ng-template>
       <div class="chat-container">
-        <p class="message" *ngFor="let message of conversation.messages">
-          <b>{{message.author + ':'}}</b> {{message.body}}</p>
+        <p class="message" *ngFor="let message of conversation.messages" [ngSwitch]="message.status">
+          <mat-icon class="message-state" *ngSwitchCase="'unknown'">sync</mat-icon>
+          <mat-icon class="message-state" *ngSwitchCase="'success'">done</mat-icon>
+          <mat-icon class="message-state" *ngSwitchCase="'failure'">error</mat-icon>
+          <b>{{message.author + ':'}}</b>
+          {{message.body}}
+        </p>
       </div>
 
     </mat-tab>
   </mat-tab-group>
-  <form class="message-form full-width">
+  <form *ngIf="canSend" class="message-form full-width">
     <mat-form-field id="message-input">
-      <textarea class="message-textarea" autofocus rows="3" matInput [(ngModel)]="messageInput"
+      <textarea (keydown)="onKeydown($event)" class="message-textarea" autofocus rows="3" matInput
+                [(ngModel)]="messageInput"
                 placeholder="Your message" name="message"></textarea>
     </mat-form-field>
-    <button [disabled]="!canSend" mat-raised-button color="primary" id="send-button" (click)="onSubmit()" >
+    <button mat-raised-button color="primary" id="send-button" (click)="onSubmit()" >
       Send
     </button>
   </form>

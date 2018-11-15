@@ -8,14 +8,5 @@
 </mat-toolbar>
 
 <div class="main-content">
-  <div *ngIf="logged; else loginSection">
-    <app-users-list></app-users-list>
-    <span class="space"></span>
-    <app-conversations></app-conversations>
-  </div>
-
-  <ng-template #loginSection>
-    <app-login></app-login>
-  </ng-template>
-
+  <router-outlet></router-outlet>
 </div>

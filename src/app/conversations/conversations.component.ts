@@ -15,9 +15,11 @@ import {BehaviorSubject} from "rxjs";
   styleUrls: ['./conversations.component.scss']
 })
 export class ConversationsComponent implements OnInit {
+  private readonly audio = new Audio("assets/stairs.mp3");
   public messageInput: string;
   private _canSend: boolean = false;
   private _selection: number = 0;
+
   @ViewChild(MatTabGroup)
   public tabGroup: MatTabGroup; // bind tagGroup component to this variable
 
@@ -30,7 +32,7 @@ export class ConversationsComponent implements OnInit {
     this.resetNotification(value);
   }
 
-  public get conversations(): BehaviorSubject<ConversationModel[]> {
+  public get conversations(): ConversationModel[] {
     return this.conversationService.conversations;
   }
 
@@ -41,20 +43,17 @@ export class ConversationsComponent implements OnInit {
   public constructor(private conversationService: ConversationService, private authenticatorService: AuthenticatorService) {
 
     this.conversationService.onUserClickEmitter.subscribe((user: UserModel) => {
-      let conversation: ConversationModel = conversationService.conversations.getValue().find((conversation) => conversation.user.id === user.id);
+      let conversation: ConversationModel = conversationService.conversations.find((conversation) => conversation.user.id === user.id);
       if (!conversation) {
         conversation = {user: user, messages: [], notifications: 0};
         conversationService.addConversation(conversation);
+        this.updateCanSendStatus();
       }
       this.selectTab(conversation);
     });
 
     this.conversationService.onMessageReceiveEmitter.subscribe((conversation: ConversationModel) => {
       this.OnNewMessageReceived(conversation);
-    });
-
-    this.conversations.subscribe((value: ConversationModel[]) => {
-      this._canSend = value.length > 0;
     });
   }
 
@@ -69,27 +68,31 @@ export class ConversationsComponent implements OnInit {
   }
 
   private playNotificationSound() {
-    const audio = new Audio("assets/stairs.mp3");
-    audio.play();
+    this.audio.play();
   }
 
   private selectTab(conversation) {
-    const index: number = this.conversations.getValue().indexOf(conversation);
+    const index: number = this.conversations.indexOf(conversation);
     if (index || index === 0) {
       this.selection = index;
     }
   }
 
   public ngOnInit() {
-    this._canSend = this.conversations.getValue().length > 0;
+    this._canSend = this.conversations.length > 0;
   }
 
   public getCurrentConversation(): ConversationModel {
-    return this.conversations.getValue()[this._selection];
+    return this.conversations[this._selection];
   }
 
   public closeConversation(index: number) {
-    this.conversations.getValue().splice(index, 1);
+    this.conversations.splice(index, 1);
+    this.updateCanSendStatus();
+  }
+
+  private updateCanSendStatus() {
+    this._canSend = this.conversations.length > 0; // update canSend
   }
 
   public onSubmit() {
@@ -102,7 +105,7 @@ export class ConversationsComponent implements OnInit {
     }
     const currentConversation = this.getCurrentConversation();
     if (currentConversation) {
-      this.conversationService.addMessage({id: this.authenticatorService.id, name: this.authenticatorService.username}
+      this.conversationService.sendMessage({id: this.authenticatorService.id, name: this.authenticatorService.username}
         , currentConversation, this.messageInput);
       this.messageInput = "";
     }
@@ -110,9 +113,15 @@ export class ConversationsComponent implements OnInit {
 
   private resetNotification(value: number) {
     try {
-      this.conversations.getValue()[value].notifications = 0;
+      this.conversations[value].notifications = 0;
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  public onKeydown(event) {
+    if (event.key === "Enter") {
+      this.onSubmit();
     }
   }
 }

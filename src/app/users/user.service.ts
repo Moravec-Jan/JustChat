@@ -21,7 +21,7 @@ export class UserService {
   }
 
   public addRange(users: UserModel[]) {
-    this.users.concat(users);
+    this._users = this.users.concat(users);
   }
 
   public remove(item: UserModel) {
