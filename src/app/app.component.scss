@@ -1,3 +1,5 @@
+@import 'colors';
+
 .main-content {
   align-items: stretch;
   display: flex;
@@ -6,29 +8,41 @@
   overflow-x: hidden;
 }
 
-app-login{
+app-login {
   width: 100%;
-}
-
-mat-toolbar {
-  justify-content: space-between;
 }
 
 .user-profile {
   font-size: 12px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: 22px;
 }
 
 body, html {
   overflow-x: hidden;
 }
 
-:host /deep/ app-chat,:host /deep/ app-login{
+:host /deep/ app-chat, :host /deep/ app-login {
   position: relative;
   display: flex;
   flex-direction: row;
   width: 100%;
+}
 
+.flex-space {
+  flex: 1;
+}
+
+.toolbar-item {
+  font-size: 16px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.title{
+font-size: inherit;
+  padding: 0;
 }

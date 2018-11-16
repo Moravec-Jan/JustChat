@@ -8,12 +8,26 @@
         <mat-icon (click)="closeConversation(conversationIndex)">close</mat-icon>
       </ng-template>
       <div class="chat-container">
-        <p class="message" *ngFor="let message of conversation.messages" [ngSwitch]="message.status">
-          <mat-icon class="message-state" *ngSwitchCase="'unknown'">sync</mat-icon>
-          <mat-icon class="message-state" *ngSwitchCase="'success'">done</mat-icon>
-          <mat-icon class="message-state" *ngSwitchCase="'failure'">error</mat-icon>
-          <b>{{message.author + ':'}}</b>
-          {{message.body}}
+        <p class="message" *ngFor="let message of conversation.messages">
+          <span *ngIf="!message.system" [ngSwitch]="message.status">
+            <mat-icon class="message-state" *ngSwitchCase="'unknown'">sync</mat-icon>
+            <mat-icon class="message-state" *ngSwitchCase="'success'">done</mat-icon>
+            <mat-icon class="message-state" *ngSwitchCase="'failure'">error</mat-icon>
+          </span>
+          <!--classic message-->
+          <span *ngIf="!message.system; else systemName">
+             <b>{{message.author + ':'}}</b>
+            {{message.body}}
+          </span>
+          <!--system message-->
+          <ng-template #systemName>
+            <mat-icon class="message-state">info</mat-icon>
+            <i>
+              <b id="systemName">{{message.author + ':'}}
+              </b>
+              {{message.body}}</i>
+          </ng-template>
+
         </p>
       </div>
 
@@ -21,7 +35,7 @@
   </mat-tab-group>
   <form *ngIf="canSend" class="message-form full-width">
     <mat-form-field id="message-input">
-      <textarea (keydown)="onKeydown($event)" class="message-textarea" autofocus rows="3" matInput
+      <textarea (keydown)="onKeydown($event)" id="message-textarea" autofocus rows="3" matInput
                 [(ngModel)]="messageInput"
                 placeholder="Your message" name="message"></textarea>
     </mat-form-field>

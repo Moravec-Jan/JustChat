@@ -56,7 +56,7 @@
   margin-right: 4px;
 }
 
-.message-textarea {
+#message-textarea {
   resize: none;
 }
 
@@ -66,4 +66,8 @@
   font-size: 12px;
   margin-bottom:0;
   padding: 0;
+}
+
+#systemName{
+  color: $primary;
 }

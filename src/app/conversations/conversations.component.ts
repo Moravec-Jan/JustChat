@@ -7,7 +7,7 @@ import {ConversationService} from "./conversation.service";
 import {ConversationModel} from "./conversation.model";
 import {AuthenticatorService} from "../autheticator/authenticator.service";
 import {UserModel} from "../users/user.model";
-import {BehaviorSubject} from "rxjs";
+
 
 @Component({
   selector: 'app-conversations',
@@ -121,7 +121,8 @@ export class ConversationsComponent implements OnInit {
 
   public onKeydown(event) {
     if (event.key === "Enter") {
-      this.onSubmit();
+      event.preventDefault(); // prevent newline
+      this.onSubmit(); //submit message
     }
   }
 }

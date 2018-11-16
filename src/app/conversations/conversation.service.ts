@@ -28,11 +28,11 @@ export class ConversationService {
 
   public constructor(private socketService: SocketService) {
     this.bots.push(new HodorBot()); //add desirable bots
-    socketService.socket.on(SocketService.NEW_MESSAGE_ID, (data: RemoteMessage, callback) => this.onReceiveMessage(data,callback)); // set callback
+    socketService.socket.on(SocketService.NEW_MESSAGE_ID, (data: RemoteMessage, callback) => this.onReceiveMessage(data, callback)); // set callback
     socketService.socket.on(SocketService.MESSAGE_INFO_ID, (data: MessageInfo) => this.onMessageInfoReceived(data));
   }
 
-  private onReceiveMessage(data: RemoteMessage,callback) {
+  private onReceiveMessage(data: RemoteMessage, callback) {
     callback();
     let target = this.findConversationForUserId(data.author.id);
     if (!target) {  // if conversation doesnt exist, create it
@@ -43,7 +43,7 @@ export class ConversationService {
       };
       this.addConversation(target)
     }
-    target.messages.push({id: data.id, status: "success", author: data.author.name, body: data.body}); // add message
+    target.messages.push({system: false, id: data.id, status: "success", author: data.author.name, body: data.body}); // add message
     this.onMessageReceiveEmitter.emit(target);
     console.log(target.notifications);
   }
@@ -60,22 +60,39 @@ export class ConversationService {
     this._conversations.push(item);
   }
 
-  public sendMessage(user: UserModel, conversation: ConversationModel, text: string) {
-    const messageId = ConversationService.counter++;
-    conversation.messages.push({id: messageId, author: user.name, body: text, status: "unknown"});
+  public addSystemMessage(user: UserModel, conversation: ConversationModel, text: string) {
+    conversation.messages.push(this.createMessage(user.name, text, "success", true));
+  }
 
-    const result: BotModel = this.bots.find((bot) => bot.id === conversation.user.id); //find out if target is bot
-    if (result) {
-      result.onMessageAdd(this, user, conversation); //send message to bot
+  public sendMessage(user: UserModel, conversation: ConversationModel, text: string) {
+    const bot: BotModel = this.bots.find((bot) => bot.id === conversation.user.id); //find out if target is bot
+    if (bot) {
+      this.sendMessageToBot(bot, user, conversation, text);
     } else {
-      const message: RemoteMessage = {
-        id: messageId,
-        author: user,
-        target: conversation.user,
-        body: text
-      };
-      this.socketService.socket.emit(SocketService.NEW_MESSAGE_ID, message); //send message to user via socket
+      this.sendMessageToUser(user, text, conversation);
     }
+  }
+
+  private sendMessageToUser(user: UserModel, text: string, conversation: ConversationModel) {
+    const message: Message = this.createMessage(user.name, text, "unknown", false);
+    const remoteMessage: RemoteMessage = {
+      id: message.id,
+      author: user,
+      target: conversation.user,
+      body: text
+    };
+    this.socketService.socket.emit(SocketService.NEW_MESSAGE_ID, remoteMessage); //send message to user via socket
+    conversation.messages.push(message);
+  }
+
+  public createMessage(author: string, body: string, status: string, system: boolean = false): Message {
+    const id = ConversationService.counter++;
+    return {system, id, author, body, status: status};
+  }
+
+  private sendMessageToBot(bot: BotModel, user: UserModel, conversation: ConversationModel, text: string) {
+    conversation.messages.push(this.createMessage(user.name, text, "success", false));
+    bot.onMessageAdd(this, user, conversation);
   }
 
   public show(user: UserModel) {
@@ -88,9 +105,27 @@ export class ConversationService {
     if (conversation) {
       conversation.messages.forEach((value, index) => {
         if (value.id === data.id) {
-          conversation.messages[index] = {id: value.id, author: value.author, body: value.body, status: data.state}  // for change detection
+          conversation.messages[index].status = data.state;
         }
       })
+    }
+  }
+
+  public onUserLoggedIn(user: UserModel) {
+    let conversation = this.findConversationForUserId(user.id);
+    if (conversation) {
+      this.addSystemMessage(this.getSystemUser(), conversation, "User went online")
+    }
+  }
+
+  private getSystemUser(): UserModel {
+    return {id: "system", name: "System"};
+  }
+
+  public onUserLoggedOut(user: UserModel) {
+    let conversation = this.findConversationForUserId(user.id);
+    if (conversation) {
+      this.addSystemMessage(this.getSystemUser(), conversation, "User went offline")
     }
   }
 }

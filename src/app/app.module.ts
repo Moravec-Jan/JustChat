@@ -28,7 +28,7 @@ import {ChatComponent} from './chat/chat.component';
 
 const appRoutes: Routes = [
   {path: '', component: ChatComponent},
-  {path: 'onStart', component: LoginComponent},
+  {path: 'login', component: LoginComponent},
 ];
 
 @NgModule({

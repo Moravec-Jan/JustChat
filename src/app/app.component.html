@@ -1,10 +1,9 @@
 <mat-toolbar color="primary" class="mat-elevation-z8">
-  <span>JustChat</span>
-
-  <div class="user-profile">
-    <b>{{username}}</b>
-    <span *ngIf="logged">Logout</span>
-  </div>
+  <span routerLink="" class="mat-button title">JustChat</span>
+  <span class="flex-space"></span>
+  <span routerLink="login" *ngIf="isGuest && route!=='/login'" class="mat-button toolbar-item">Login</span>
+  <span *ngIf="!isGuest" class="mat-button toolbar-item">Logout</span>
+  <span routerLink="" *ngIf="route!=='/'" class="mat-button toolbar-item">Back to chat</span>
 </mat-toolbar>
 
 <div class="main-content">

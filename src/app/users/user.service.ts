@@ -2,22 +2,35 @@ import {UserModel} from "./user.model";
 import {AuthenticatorService} from "../autheticator/authenticator.service";
 import {Injectable} from "@angular/core";
 import {SocketService} from "../socket/socket.service";
+import {BotModel} from "../bot/bot.model";
+import {validate} from "codelyzer/walkerFactory/walkerFn";
 
 @Injectable()
 export class UserService {
-  private _users: UserModel[] = [{id: "0", name: "Hodor"}];
+  private _bots: UserModel[] = [{id: "0", name: "Hodor"}];
+  private _users: UserModel[] = [];
 
   public constructor(private socketService: SocketService) {
-    socketService.socket.on(SocketService.USER_LOGGED_IN_ID, (user: UserModel) => this.add(user));
-    socketService.socket.on(SocketService.USER_LOGGED_OUT_ID, (user: id) => this.removeById(user.id));
+    this._users = this._users.concat(this._bots);
   }
 
   public get users(): UserModel[] {
     return this._users;
   }
 
+  public set users(value: UserModel[]) {
+    this._users = value.concat(this._bots); // add bots too
+  }
+
   public add(item: UserModel) {
-    this.users.push(item);
+    const existing = this._users.find((value) => {
+      return value.id === item.id
+    });
+    if (!existing) {
+      this.users.push(item);
+    } else {
+      existing.name = item.name;
+    }
   }
 
   public addRange(users: UserModel[]) {
@@ -42,8 +55,4 @@ export class UserService {
     }
   }
 
-}
-
-interface id {
-  id: string
 }
