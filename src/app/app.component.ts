@@ -1,6 +1,8 @@
-import {Component, Injectable} from '@angular/core';
+import {AfterViewInit, Component, Injectable, OnInit} from '@angular/core';
 import {AuthenticatorService} from "./autheticator/authenticator.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {CookieService} from "ngx-cookie-service";
+import {SocketService} from "./socket/socket.service";
 
 @Component({
   selector: 'app-root',
@@ -10,10 +12,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 @Injectable()
 export class AppComponent {
 
-  public constructor(private authenticatorService: AuthenticatorService, private _router: Router) {
+  public constructor(private socketService: SocketService, private authenticatorService: AuthenticatorService, private _router: Router, private  cookieService: CookieService) {
   }
 
-  get route(): string{
+  get route(): string {
     return this._router.url;
   }
 
@@ -21,7 +23,20 @@ export class AppComponent {
     return this.authenticatorService.username;
   }
 
+  get logged() {
+    return this.authenticatorService.logged;
+  }
+
   public get isGuest(): boolean {
     return this.authenticatorService.guest;
+  }
+
+  onLogoutClick() {
+    this.authenticatorService.logout();
+  }
+
+  loginAsGuest() {
+    this.socketService.reconnect();
+    this.authenticatorService.loginAsGuest();
   }
 }

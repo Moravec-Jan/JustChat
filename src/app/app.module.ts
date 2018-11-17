@@ -24,6 +24,7 @@ import {SocketService} from "./socket/socket.service";
 import {LoginComponent} from './login/login.component';
 import {RouterModule, Routes} from "@angular/router";
 import {ChatComponent} from './chat/chat.component';
+import {CookieService} from 'ngx-cookie-service';
 
 
 const appRoutes: Routes = [
@@ -58,6 +59,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule
   ],
   providers: [
+    CookieService,
     AuthenticatorService,
     {
       provide: APP_INITIALIZER,

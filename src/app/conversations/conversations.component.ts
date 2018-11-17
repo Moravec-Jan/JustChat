@@ -15,6 +15,7 @@ import {UserModel} from "../users/user.model";
   styleUrls: ['./conversations.component.scss']
 })
 export class ConversationsComponent implements OnInit {
+  public focus: boolean = true;
   private readonly audio = new Audio("assets/stairs.mp3");
   public messageInput: string;
   private _canSend: boolean = false;
@@ -68,7 +69,7 @@ export class ConversationsComponent implements OnInit {
   }
 
   private playNotificationSound() {
-    this.audio.play();
+    this.audio.play().catch(() => console.log("audio play rejected"));
   }
 
   private selectTab(conversation) {
@@ -105,7 +106,7 @@ export class ConversationsComponent implements OnInit {
     }
     const currentConversation = this.getCurrentConversation();
     if (currentConversation) {
-      this.conversationService.sendMessage({id: this.authenticatorService.id, name: this.authenticatorService.username}
+      this.conversationService.sendMessage({id: "me", name: this.authenticatorService.username}
         , currentConversation, this.messageInput);
       this.messageInput = "";
     }

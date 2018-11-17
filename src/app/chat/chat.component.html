@@ -1,3 +1,6 @@
-<app-users-list></app-users-list>
-<span class="space"></span>
-<app-conversations></app-conversations>
+<app-users-list *ngIf="logged"></app-users-list>
+<span class="space" *ngIf="logged"></span>
+<app-conversations *ngIf="logged"></app-conversations>
+<p *ngIf="!logged">
+  You are currently logged out. Hope you come back soon :]
+</p>

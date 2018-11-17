@@ -35,8 +35,8 @@
   </mat-tab-group>
   <form *ngIf="canSend" class="message-form full-width">
     <mat-form-field id="message-input">
-      <textarea (keydown)="onKeydown($event)" id="message-textarea" autofocus rows="3" matInput
-                [(ngModel)]="messageInput"
+      <textarea onblur="this.focus()" (keydown)="onKeydown($event)" id="message-textarea" rows="3" matInput
+                [(ngModel)]="messageInput" tabIndex="-1"
                 placeholder="Your message" name="message"></textarea>
     </mat-form-field>
     <button mat-raised-button color="primary" id="send-button" (click)="onSubmit()" >

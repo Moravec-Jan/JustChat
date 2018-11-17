@@ -33,7 +33,7 @@ export class ConversationService {
   }
 
   private onReceiveMessage(data: RemoteMessage, callback) {
-    callback();
+    callback(); // function from server that notify author of message that message has been delivered
     let target = this.findConversationForUserId(data.author.id);
     if (!target) {  // if conversation doesnt exist, create it
       target = {
@@ -75,9 +75,8 @@ export class ConversationService {
 
   private sendMessageToUser(user: UserModel, text: string, conversation: ConversationModel) {
     const message: Message = this.createMessage(user.name, text, "unknown", false);
-    const remoteMessage: RemoteMessage = {
+    const remoteMessage = {
       id: message.id,
-      author: user,
       target: conversation.user,
       body: text
     };

@@ -1,9 +1,10 @@
 <mat-toolbar color="primary" class="mat-elevation-z8">
   <span routerLink="" class="mat-button title">JustChat</span>
   <span class="flex-space"></span>
-  <span routerLink="login" *ngIf="isGuest && route!=='/login'" class="mat-button toolbar-item">Login</span>
-  <span *ngIf="!isGuest" class="mat-button toolbar-item">Logout</span>
+  <span routerLink="login" *ngIf="(isGuest || !logged) && route!=='/login'" class="mat-button toolbar-item">Login</span>
+  <span *ngIf="logged && !isGuest" (click)="onLogoutClick()" class="mat-button toolbar-item">Logout</span>
   <span routerLink="" *ngIf="route!=='/'" class="mat-button toolbar-item">Back to chat</span>
+  <span (click)="loginAsGuest()" *ngIf="!logged" class="mat-button toolbar-item">Back as guest</span>
 </mat-toolbar>
 
 <div class="main-content">
