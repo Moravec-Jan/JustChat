@@ -38,3 +38,8 @@ app-conversations {
   width: 100%;
   color: $error-red;
 }
+
+app-notification {
+  display: flex;
+  align-self: center;
+}

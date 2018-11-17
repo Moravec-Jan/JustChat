@@ -3,8 +3,7 @@ import {AuthenticatorService} from "../autheticator/authenticator.service";
 
 @Component({
   selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  templateUrl: './chat.component.html'
 })
 export class ChatComponent implements OnInit {
 

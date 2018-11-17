@@ -1,4 +1,5 @@
 <div id=message-box>
+  <app-notification *ngIf="guest"></app-notification>
   <mat-tab-group [(selectedIndex)]="selection">
     <mat-tab *ngFor="let conversation of conversations; let conversationIndex = index"
              [id]="conversation.user.id">

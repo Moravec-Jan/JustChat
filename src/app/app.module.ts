@@ -25,11 +25,14 @@ import {LoginComponent} from './login/login.component';
 import {RouterModule, Routes} from "@angular/router";
 import {ChatComponent} from './chat/chat.component';
 import {CookieService} from 'ngx-cookie-service';
+import {ErrorComponent} from './error/error.component';
+import { NotificationComponent } from './notification/notification.component';
 
 
 const appRoutes: Routes = [
   {path: '', component: ChatComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'error', component: ErrorComponent}
 ];
 
 @NgModule({
@@ -39,6 +42,8 @@ const appRoutes: Routes = [
     ConversationsComponent,
     LoginComponent,
     ChatComponent,
+    ErrorComponent,
+    NotificationComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

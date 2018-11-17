@@ -15,7 +15,6 @@ import {UserModel} from "../users/user.model";
   styleUrls: ['./conversations.component.scss']
 })
 export class ConversationsComponent implements OnInit {
-  public focus: boolean = true;
   private readonly audio = new Audio("assets/stairs.mp3");
   public messageInput: string;
   private _canSend: boolean = false;
@@ -39,6 +38,10 @@ export class ConversationsComponent implements OnInit {
 
   get canSend(): boolean {
     return this._canSend;
+  }
+
+  get guest(): boolean {
+    return this.authenticatorService.guest;
   }
 
   public constructor(private conversationService: ConversationService, private authenticatorService: AuthenticatorService) {

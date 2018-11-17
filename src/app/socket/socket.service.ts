@@ -3,6 +3,7 @@ import {AppConfig} from "../app.config";
 import {CookieService} from "ngx-cookie-service";
 import {EventEmitter, Injectable, OnInit} from "@angular/core";
 import Socket = SocketIOClient.Socket;
+import {Router} from "@angular/router";
 
 @Injectable()
 export class SocketService implements OnInit {
@@ -21,18 +22,44 @@ export class SocketService implements OnInit {
 
 
   private _onSocketConnected: EventEmitter<Socket> = new EventEmitter<Socket>();
+  private _onSocketErrorState: EventEmitter<boolean> = new EventEmitter<boolean>();
   private _socket;
+  private _error: boolean;
 
   public constructor(private cookieService: CookieService) {
     this.connect();
+
+    this.socket.on('connect_error', () => {
+      this.failed();
+    });
+
+    this.socket.on('connection', () => {
+      this.success();
+    });
+
+    this.socket.on('reconnect', () => {
+      this.success();
+    });
+  }
+
+  private failed() {
+    this._error = true;
+    this._onSocketErrorState.emit(true);
+  }
+
+  private success() {
     this._onSocketConnected.emit(this._socket);
+    this._onSocketErrorState.emit(false);
+    this._error = false;
   }
 
   private connect() {
     const session = this.cookieService.get('connect.sid');
-    this._socket = socketIO(AppConfig.SERVER_URL, {
-      query: {ssid: session}
-    }); // connect to server socket
+    if (!session) {
+      // session id not recieved from server!
+      this.failed();
+    }
+    this._socket = socketIO(AppConfig.SERVER_URL); // connect to server socket
   }
 
   ngOnInit(): void {
@@ -43,6 +70,13 @@ export class SocketService implements OnInit {
     return this._socket;
   }
 
+  get error(): boolean {
+    return this._error;
+  }
+
+  get onSocketErrorState(): EventEmitter<boolean> {
+    return this._onSocketErrorState;
+  }
 
   get onSocketConnected(): EventEmitter<SocketIOClient.Socket> {
     return this._onSocketConnected;
