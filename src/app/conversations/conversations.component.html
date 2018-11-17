@@ -13,7 +13,7 @@
           <span *ngIf="!message.system" [ngSwitch]="message.status">
             <mat-icon class="message-state" *ngSwitchCase="'unknown'">sync</mat-icon>
             <mat-icon class="message-state" *ngSwitchCase="'success'">done</mat-icon>
-            <mat-icon class="message-state" *ngSwitchCase="'failure'">error</mat-icon>
+            <mat-icon class="message-state red" *ngSwitchCase="'failure'">error</mat-icon>
           </span>
           <!--classic message-->
           <span *ngIf="!message.system; else systemName">

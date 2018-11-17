@@ -8,6 +8,8 @@ import {RemoteMessage} from "./remote-message";
 import {SocketService} from "../socket/socket.service";
 import {MessageInfo} from "./message-info";
 import {Message} from "./message";
+import {LoggedData} from "../autheticator/logged-data";
+import {UserStateChangedInfo} from "../autheticator/user-state-changed-info";
 
 @Injectable()
 export class ConversationService {
@@ -110,21 +112,34 @@ export class ConversationService {
     }
   }
 
-  public onUserLoggedIn(user: UserModel) {
+  public onUserLoggedIn(user: LoggedData) {
     let conversation = this.findConversationForUserId(user.id);
     if (conversation) {
-      this.addSystemMessage(this.getSystemUser(), conversation, "User went online")
+      this.addSystemMessage(this.getSystemUser(), conversation, user.name + " went online");
+      this.onMessageReceiveEmitter.emit(conversation);
     }
+
   }
+
+  public onUserStateChanged(info: UserStateChangedInfo) {
+    let conversation = this.findConversationForUserId(info.from.id);
+    if (conversation && info.from.name !== info.to.name) {
+      this.addSystemMessage(this.getSystemUser(), conversation, info.from.name + " changed his name to " + info.to.name);
+      this.onMessageReceiveEmitter.emit(conversation);
+    }
+    conversation.user = info.to;
+  }
+
 
   private getSystemUser(): UserModel {
     return {id: "system", name: "System"};
   }
 
-  public onUserLoggedOut(user: UserModel) {
+  public onUserLoggedOut(user: LoggedData) {
     let conversation = this.findConversationForUserId(user.id);
     if (conversation) {
-      this.addSystemMessage(this.getSystemUser(), conversation, "User went offline")
+      this.addSystemMessage(this.getSystemUser(), conversation, conversation.user.name + " went offline");
+      this.onMessageReceiveEmitter.emit(conversation);
     }
   }
 }

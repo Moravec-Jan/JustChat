@@ -52,7 +52,7 @@ export class AppComponent {
   }
 
   loginAsGuest() {
-    this.socketService.reconnect();
+    this.socketService.connect();
     this.authenticatorService.loginAsGuest();
   }
 

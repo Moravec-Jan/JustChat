@@ -1,7 +1,8 @@
 import {UserModel} from "../users/user.model";
 
 export interface LoggedData {
-  name: string,
+  id: string;
   users: UserModel[];
+  name: string,
   status: string;
 }

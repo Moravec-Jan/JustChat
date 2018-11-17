@@ -15,6 +15,7 @@ export class SocketService implements OnInit {
   public static readonly USER_LOGIN_REQUEST_ID = 'user_login';
 
   public static readonly OTHER_USER_LOGGED_IN_ID = 'user_logged_in';
+  public static readonly OTHER_USER_STATE_CHANGED = 'user_stated_changed';
   public static readonly OTHER_USER_LOGGED_OUT_ID = 'user_logged_out';
 
   public static readonly REGISTER_REQUEST_ID = 'register_request';
@@ -27,7 +28,7 @@ export class SocketService implements OnInit {
   private _error: boolean;
 
   public constructor(private cookieService: CookieService) {
-    this.connect();
+    this.connectSocket();
 
     this.socket.on('connect_error', () => {
       this.failed();
@@ -37,7 +38,7 @@ export class SocketService implements OnInit {
       this.success();
     });
 
-    this.socket.on('reconnect', () => {
+    this.socket.on('connect', () => {
       this.success();
     });
   }
@@ -53,13 +54,8 @@ export class SocketService implements OnInit {
     this._error = false;
   }
 
-  private connect() {
-    const session = this.cookieService.get('connect.sid');
-    if (!session) {
-      // session id not recieved from server!
-      this.failed();
-    }
-    this._socket = socketIO(AppConfig.SERVER_URL); // connect to server socket
+  private connectSocket() {
+    this._socket = socketIO(AppConfig.SERVER_URL); // connectSocket to server socket (for dev use AppConfig.SERVER_URL)
   }
 
   ngOnInit(): void {
@@ -82,9 +78,9 @@ export class SocketService implements OnInit {
     return this._onSocketConnected;
   }
 
-  public reconnect() {
+  public connect() {
     if (!this._socket.connect()) {
-      this.connect();
+      this.connectSocket();
     }
   }
 }

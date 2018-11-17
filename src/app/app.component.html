@@ -6,7 +6,7 @@
     <span routerLink="login" *ngIf="(isGuest || !logged) && route!=='login'"
           class="mat-button toolbar-item">Login</span>
     <span *ngIf="logged && !isGuest" (click)="onLogoutClick()" class="mat-button toolbar-item">Logout</span>
-    <span routerLink="" *ngIf="route!==''" class="mat-button toolbar-item">Back to chat</span>
+    <span routerLink="" *ngIf="route!=='' && logged" class="mat-button toolbar-item">Back to chat</span>
     <span (click)="loginAsGuest()" *ngIf="!logged && route!=='login'"
           class="mat-button toolbar-item">Back as guest</span>
   </ng-container>

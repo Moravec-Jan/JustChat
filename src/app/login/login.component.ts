@@ -54,5 +54,6 @@ export class LoginComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.socketService.connect();
   }
 }

@@ -63,10 +63,14 @@
   width: 14px;
   height: 14px;
   font-size: 12px;
-  margin-bottom:0;
+  margin-bottom: 0;
   padding: 0;
 }
 
-#systemName{
+#systemName {
   color: $primary;
+}
+
+.red {
+  color: $error-red;
 }

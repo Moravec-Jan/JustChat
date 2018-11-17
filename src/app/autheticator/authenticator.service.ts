@@ -5,6 +5,7 @@ import {UserService} from "../users/user.service";
 import {LoggedData} from "./logged-data";
 import {ConversationService} from "../conversations/conversation.service";
 import {UserData} from "./user-data";
+import {UserStateChangedInfo} from "./user-state-changed-info";
 
 @Injectable()
 export class AuthenticatorService {
@@ -17,7 +18,7 @@ export class AuthenticatorService {
 
 
   constructor(private socketService: SocketService, private conversationService: ConversationService, private userService: UserService) {
-    socketService.socket.on(SocketService.OTHER_USER_LOGGED_IN_ID, (user: UserModel) => {
+    socketService.socket.on(SocketService.OTHER_USER_LOGGED_IN_ID, (user: LoggedData) => {
       //must be called in this order
       userService.add(user);
       conversationService.onUserLoggedIn(user);
@@ -28,7 +29,16 @@ export class AuthenticatorService {
       this._guest = true;
     });
 
-    socketService.socket.on(SocketService.OTHER_USER_LOGGED_OUT_ID, (user: UserModel) => {
+    socketService.socket.on(SocketService.OTHER_USER_STATE_CHANGED, (info: UserStateChangedInfo) => {
+      let user = userService.users.find((user) => user.id === info.from.id);
+      if (user) {
+        user.id = info.to.id;
+        user.name = info.to.name;
+      }
+      conversationService.onUserStateChanged(info);
+    });
+
+    socketService.socket.on(SocketService.OTHER_USER_LOGGED_OUT_ID, (user: LoggedData) => {
       //must be called in this order
       conversationService.onUserLoggedOut(user);
       userService.removeById(user.id)
@@ -45,7 +55,6 @@ export class AuthenticatorService {
     });
 
     this.socketService.socket.on(SocketService.LOGOUT_REQUEST_ID, () => {
-      socketService.socket.disconnect();
       this._logged = false;
     })
   }
