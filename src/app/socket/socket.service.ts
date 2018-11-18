@@ -26,10 +26,12 @@ export class SocketService implements OnInit {
   private _onSocketErrorState: EventEmitter<boolean> = new EventEmitter<boolean>();
   private _socket;
   private _error: boolean;
+  private callbackSetUp: boolean = false;
 
-  public constructor(private cookieService: CookieService) {
-    this.connectSocket();
+  public constructor() {
+  }
 
+  private setErrorCallbacks() {
     this.socket.on('connect_error', () => {
       this.failed();
     });
@@ -41,6 +43,7 @@ export class SocketService implements OnInit {
     this.socket.on('connect', () => {
       this.success();
     });
+    this.callbackSetUp = true;
   }
 
   private failed() {
@@ -55,7 +58,10 @@ export class SocketService implements OnInit {
   }
 
   private connectSocket() {
-    this._socket = socketIO(); // connectSocket to server socket (for dev use AppConfig.SERVER_URL)
+    this._socket = socketIO(AppConfig.SERVER_URL); // connectSocket to server socket (for dev use AppConfig.SERVER_URL)
+    if (this.callbackSetUp) {
+      this.setErrorCallbacks();
+    }
   }
 
   ngOnInit(): void {
@@ -79,7 +85,7 @@ export class SocketService implements OnInit {
   }
 
   public connect() {
-    if (!this._socket.connect()) {
+    if (!this.socket || !this._socket.connect()) {
       this.connectSocket();
     }
   }

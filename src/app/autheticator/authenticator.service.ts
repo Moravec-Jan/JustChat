@@ -101,10 +101,6 @@ export class AuthenticatorService {
     return this._guest;
   }
 
-  public onStart() {
-    this.loginAsGuest();
-  }
-
   get onLogout(): EventEmitter<void> {
     return this._onLogout;
   }

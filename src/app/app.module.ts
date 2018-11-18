@@ -18,7 +18,7 @@ import {UserService} from "./users/user.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {AuthenticatorService} from "./autheticator/authenticator.service";
-import {AuthenticatorFactory} from "./autheticator/authenticator.factory";
+import {SocketInit} from "./autheticator/socketInit";
 import {CommonModule} from "@angular/common";
 import {SocketService} from "./socket/socket.service";
 import {LoginComponent} from './login/login.component';
@@ -68,8 +68,8 @@ const appRoutes: Routes = [
     AuthenticatorService,
     {
       provide: APP_INITIALIZER,
-      useFactory: AuthenticatorFactory,
-      deps: [AuthenticatorService, SocketService, UserService],
+      useFactory: SocketInit,
+      deps: [SocketService],
       multi: true
     },
     ConversationService,
