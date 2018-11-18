@@ -112,13 +112,13 @@ export class ConversationService {
     }
   }
 
-  public onUserLoggedIn(user: LoggedData) {
+  public onUserLoggedIn(user: UserModel) {
     let conversation = this.findConversationForUserId(user.id);
     if (conversation) {
+      conversation.user.name = user.name;
       this.addSystemMessage(this.getSystemUser(), conversation, user.name + " went online");
       this.onMessageReceiveEmitter.emit(conversation);
     }
-
   }
 
   public onUserStateChanged(info: UserStateChangedInfo) {
@@ -126,8 +126,8 @@ export class ConversationService {
     if (conversation && info.from.name !== info.to.name) {
       this.addSystemMessage(this.getSystemUser(), conversation, info.from.name + " changed his name to " + info.to.name);
       this.onMessageReceiveEmitter.emit(conversation);
+      conversation.user = info.to;
     }
-    conversation.user = info.to;
   }
 
 
@@ -135,7 +135,7 @@ export class ConversationService {
     return {id: "system", name: "System"};
   }
 
-  public onUserLoggedOut(user: LoggedData) {
+  public onUserLoggedOut(user: UserModel) {
     let conversation = this.findConversationForUserId(user.id);
     if (conversation) {
       this.addSystemMessage(this.getSystemUser(), conversation, conversation.user.name + " went offline");

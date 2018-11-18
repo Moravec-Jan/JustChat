@@ -6,6 +6,7 @@ import {LoggedData} from "./logged-data";
 import {ConversationService} from "../conversations/conversation.service";
 import {UserData} from "./user-data";
 import {UserStateChangedInfo} from "./user-state-changed-info";
+import {ConversationModel} from "../conversations/conversation.model";
 
 @Injectable()
 export class AuthenticatorService {
@@ -18,10 +19,10 @@ export class AuthenticatorService {
 
 
   constructor(private socketService: SocketService, private conversationService: ConversationService, private userService: UserService) {
-    socketService.socket.on(SocketService.OTHER_USER_LOGGED_IN_ID, (user: LoggedData) => {
+    socketService.socket.on(SocketService.OTHER_USER_LOGGED_IN_ID, (info: LoggedData) => {
       //must be called in this order
-      userService.add(user);
-      conversationService.onUserLoggedIn(user);
+      userService.add(info);
+      conversationService.onUserLoggedIn(info);
     });
 
     this.socketService.socket.on(SocketService.GUEST_LOGIN_REQUEST_ID, (value) => {
@@ -30,12 +31,28 @@ export class AuthenticatorService {
     });
 
     socketService.socket.on(SocketService.OTHER_USER_STATE_CHANGED, (info: UserStateChangedInfo) => {
-      let user = userService.users.find((user) => user.id === info.from.id);
-      if (user) {
-        user.id = info.to.id;
-        user.name = info.to.name;
+      const newConversation: ConversationModel = conversationService.conversations.find((conversation => conversation.user.id == info.to.id));
+      const lastConversation: ConversationModel = conversationService.conversations.find((conversation => conversation.user.id == info.from.id));
+      if (newConversation && lastConversation) { // last and new conversation present
+        conversationService.onUserLoggedIn(newConversation.user);
+        conversationService.onUserLoggedOut(lastConversation.user);
+        userService.removeById(lastConversation.user.id);
+        userService.add({id: info.to.id, name: info.to.name});
+        return;
       }
-      conversationService.onUserStateChanged(info);
+      if (lastConversation) { // only last conversation present
+        this.changeGuestToUser(info);
+        return;
+      }
+
+      if (newConversation) { // new user connected, last conversation not present
+        userService.add(info.to);
+        conversationService.onUserLoggedIn(info.to);
+        return;
+      }
+      // is not in any conversation, just add new and remove old
+      userService.removeById(info.from.id);
+      userService.add(info.to);
     });
 
     socketService.socket.on(SocketService.OTHER_USER_LOGGED_OUT_ID, (user: LoggedData) => {
@@ -57,6 +74,15 @@ export class AuthenticatorService {
     this.socketService.socket.on(SocketService.LOGOUT_REQUEST_ID, () => {
       this._logged = false;
     })
+  }
+
+  private changeGuestToUser(info: UserStateChangedInfo) {
+    this.conversationService.onUserStateChanged(info);
+    let user = this.userService.users.find((user) => user.id === info.from.id);
+    if (user) {
+      user.id = info.to.id;
+      user.name = info.to.name;
+    }
   }
 
   private processLoginData(value) {
