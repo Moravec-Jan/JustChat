@@ -58,7 +58,7 @@ export class SocketService implements OnInit {
   }
 
   private connectSocket() {
-    this._socket = socketIO(AppConfig.SERVER_URL); // connectSocket to server socket (for dev use AppConfig.SERVER_URL)
+    this._socket = socketIO(); // connectSocket to server socket (for dev use AppConfig.SERVER_URL)
     if (this.callbackSetUp) {
       this.setErrorCallbacks();
     }

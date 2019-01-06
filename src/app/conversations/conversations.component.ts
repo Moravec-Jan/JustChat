@@ -51,9 +51,9 @@ export class ConversationsComponent implements OnInit {
       if (!conversation) {
         conversation = {user: user, messages: [], notifications: 0};
         conversationService.addConversation(conversation);
-        this.updateCanSendStatus();
       }
       this.selectTab(conversation);
+      this.updateCanSendStatus();
     });
 
     this.conversationService.onMessageReceiveEmitter.subscribe((conversation: ConversationModel) => {
